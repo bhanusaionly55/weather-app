@@ -1,12 +1,13 @@
 const container = document.querySelector('.container');
 const search = document.querySelector('.search-box button');
+const input = document.querySelector('.search-box input');
 const weatherBox = document.querySelector('.weather-box');
 const weatherDetails = document.querySelector('.weather-details');
 const error404 = document.querySelector('.not-found');
 
-search.addEventListener('click', () => {
+const fetchWeather = () => {
     const APIkey = 'dc8aac8756a561215610c184fe183385';
-    const city = document.querySelector('.search-box input').value;
+    const city = input.value;
 
     if (city == '') return;
 
@@ -21,12 +22,9 @@ search.addEventListener('click', () => {
                 return;
             }
 
-            // Reset transitions
             weatherBox.classList.remove('active');
             weatherDetails.classList.remove('active');
             error404.classList.remove('active');
-
-            // Trigger reflow (forces the browser to repaint and apply the reset state)
             void weatherBox.offsetWidth;
 
             container.style.height = '555px';
@@ -64,10 +62,17 @@ search.addEventListener('click', () => {
             humidity.innerHTML = `${json.main.humidity}%`;
             wind.innerHTML = `${parseInt(json.wind.speed)}Km/h`;
 
-            // Reapply transitions
             setTimeout(() => {
                 weatherBox.classList.add('active');
                 weatherDetails.classList.add('active');
             }, 100);
         });
+};
+
+search.addEventListener('click', fetchWeather);
+
+input.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+        fetchWeather();
+    }
 });
